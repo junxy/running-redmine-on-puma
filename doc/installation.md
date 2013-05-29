@@ -20,7 +20,7 @@ The Redmine installation consists of setting up the following components:
 
 Install the required packages:
 
-    sudo apt-get install vim curl git-core imagemagick libmagickwand-dev
+    sudo apt-get install vim curl git imagemagick libmagickwand-dev
 
 # 2. Ruby
 
@@ -70,7 +70,7 @@ Create a `redmine` user for Redmine:
     mysql> \q
 
     # Try connecting to the new database with the new user
-    sudo -u git -H mysql -u redmine -p -D redmine_production
+    sudo -u redmine -H mysql -u redmine -p -D redmine_production
 
 # 5. Redmine
 
@@ -114,13 +114,16 @@ do so with caution!
     sudo chmod -R u+rwX  tmp/
 
     # Create directories for sockets/pids and make sure Redmine can write to them
-    mkdir tmp/pids/
-    mkdir tmp/sockets/
-    sudo chmod -R u+rwX  tmp/pids/
-    sudo chmod -R u+rwX  tmp/sockets/
+    sudo mkdir tmp/pids/
+    sudo mkdir tmp/sockets/
+    #sudo chown -R redmine plugins
+	sudo chown -R redmine tmp/pids/
+    sudo chown -R redmine tmp/sockets/
 
     # Copy the example Puma config
+	sudo su redmine
     curl --output /home/redmine/redmine/config/puma.rb https://raw.github.com/junxy/running-redmine-on-puma/master/config/redmine/puma.rb.example
+	exit
 
 **Important Note:**
 
@@ -128,13 +131,23 @@ do so with caution!
 ## Configure Redmine DB settings
 
     # Mysql
+	cp config/database.yml.example config/database.yml
     vim config/database.yml
+	# add
+	socket: /var/run/mysqld/mysqld.sock
+	reconnect: false
+
 
 Make sure to update username/password in config/database.yml.
 
 ## Install Gems
 
     cd /home/redmine/redmine
+
+	# add puma
+	vim Gemfile
+	#http://mirrors.tuna.tsinghua.edu.cn/rubygems/
+	gem "puma", '~> 2.0.1'
 
     # For MySQL (note, the option says "without")
     bundle install --without development test postgresql sqlite
