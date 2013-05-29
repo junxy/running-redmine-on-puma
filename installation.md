@@ -431,8 +431,19 @@ While we can't officially support every possible auth mechanism out there, we'd 
 
 ###rvm:
 
+	# Adjust the shebang for RVM
+    # After fresh checkout: #!/usr/bin/env ruby
+    # Change it to: #!/usr/bin/env /home/git/.rvm/bin/ruby    
 	vim /home/git/gitlab-shell/bin/gitlab-shell
 	
 ###disable fork
 
 	./models/ability.rb
+
+
+##Ref
+
+1. https://github.com/gitlabhq/gitlab-public-wiki/wiki/Debian-Squeeze-complete-Installation-'script'-with-RVM
+2. http://ruby-china.org/wiki/install-rails-on-ubuntu-12-04-server
+3. http://ruby-china.org/wiki/rvm-guide
+4. http://gems.gzruby.org/
